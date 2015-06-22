@@ -1,0 +1,28 @@
+//
+//  BaseMVCProject.pch
+//  BaseMVCProject
+//
+//  Created by saifing_82 on 15/3/17.
+//  Copyright (c) 2015年 saifing_82. All rights reserved.
+//
+
+#ifndef BaseMVCProject_BaseMVCProject_pch
+#define BaseMVCProject_BaseMVCProject_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif
+
+
+/**
+ *  配置类
+ */
+#import "IMNetWorkApiConfig.h"
+#import "IMConfigColor.h"
+#import "IMConfigDefine.h"
+#import "IMConfigFont.h"
+#import "IMConfigImage.h"
+#import "IMConfigMessage.h"
+#import "IMConfigNumber.h"
+#import "IMConfigRoot.h"
