@@ -7,9 +7,11 @@
 //
 
 #import "TestBaseMVCViewController.h"
+
 #import "ProducFortList.h"
 
 @interface TestBaseMVCViewController ()<UITableViewDataSource,UITableViewDelegate>
+//
 @property (nonatomic,strong) NSMutableArray *Products;
 
 @end
@@ -21,7 +23,7 @@
     // Do any additional setup after loading the view from its nib.
 //    [[self getNetWork]requestHomeAdvertiseSelectList];
     self.Products = [[NSMutableArray alloc]init];
-    NSMutableDictionary *dic = [NSMutableDictionary alloc]init;
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
     [dic setObject:@"1" forKey:@"corpid"];
     [dic setObject:@"0" forKey:@"start"];
     [dic setObject:@"10" forKey:@"limit"];
@@ -43,6 +45,14 @@
 }
 */
 -(void)didRequestSuccess:(NSDictionary*)acdicInfo withUrl:(NSString*)acstrUrl{
+    //解析数据
+    NSArray *dataArr = [acdicInfo objectForKey:@"data"];
+    
+    for (NSDictionary *dic in dataArr) {
+        ProducFortList *productForList = [[ProducFortList alloc]initWithDictionary:dic];
+        [self.Products addObject:productForList];
+    }
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
@@ -65,7 +75,7 @@
     return self.Products.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *identifier = @"ProductCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -73,9 +83,10 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
     }
     ProducFortList *product = self.Products[indexPath.row];
-    cell.textLabel.text = @"%df"; product.productname;
+    cell.textLabel.productNo = product.productno;
+    cell.textLabel.productName =product.productname;
     return  cell;
-}
+}S
 
 
 

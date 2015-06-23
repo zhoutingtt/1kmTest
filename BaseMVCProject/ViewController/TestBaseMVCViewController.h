@@ -9,5 +9,5 @@
 #import "BaseViewController.h"
 
 @interface TestBaseMVCViewController : BaseViewController
-
+@property (weak,nonatomic) IBOutlet UITableView *tableView;
 @end
