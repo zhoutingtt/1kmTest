@@ -9,6 +9,7 @@
 #import "TestBaseMVCViewController.h"
 
 #import "ProducFortList.h"
+#import "ProductTableViewCell.h"
 
 @interface TestBaseMVCViewController ()<UITableViewDataSource,UITableViewDelegate>
 //
@@ -75,19 +76,18 @@
     return self.Products.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *identifier = @"ProductCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    ProductTableViewCell *cell;
+    cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+         cell = [[[NSBundle mainBundle]loadNibNamed:@"ProductTableViewCell" owner:self options:nil]objectAtIndex:0];
     }
     ProducFortList *product = self.Products[indexPath.row];
-    cell.textLabel.productNo = product.productno;
-    cell.textLabel.productName =product.productname;
+    cell.ProductNo.text = product.productno;
+    cell.ProductName.text = product.productname;
     return  cell;
-}S
-
+}
 
 
 #pragma mark - UITableDelegate
@@ -98,7 +98,7 @@
  */
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 44;
+    return 200;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
