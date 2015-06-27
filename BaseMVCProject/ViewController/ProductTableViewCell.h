@@ -11,5 +11,10 @@
 @interface ProductTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *ProductNo;
 @property (weak, nonatomic) IBOutlet UILabel *ProductName;
+@property (weak, nonatomic) IBOutlet UIImageView *ProductLogo;
+@property (weak, nonatomic) IBOutlet UILabel *Price;
+@property (weak, nonatomic) IBOutlet UILabel *Type;
+@property (weak, nonatomic) IBOutlet UILabel *unit;
+@property (weak, nonatomic) IBOutlet UILabel *shopName;
 
 @end

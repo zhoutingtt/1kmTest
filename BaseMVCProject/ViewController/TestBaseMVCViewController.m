@@ -10,6 +10,7 @@
 
 #import "ProducFortList.h"
 #import "ProductTableViewCell.h"
+#import "UIImageView+WebCache.h"
 
 @interface TestBaseMVCViewController ()<UITableViewDataSource,UITableViewDelegate>
 //
@@ -22,12 +23,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-//    [[self getNetWork]requestHomeAdvertiseSelectList];
+    //    [[self getNetWork]requestHomeAdvertiseSelectList];
     self.Products = [[NSMutableArray alloc]init];
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
     [dic setObject:@"1" forKey:@"corpid"];
     [dic setObject:@"0" forKey:@"start"];
-    [dic setObject:@"10" forKey:@"limit"];
+    [dic setObject:@"999" forKey:@"limit"];
     [[self getNetWork]requestProductListQuery:dic];
 }
 
@@ -37,14 +38,14 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 -(void)didRequestSuccess:(NSDictionary*)acdicInfo withUrl:(NSString*)acstrUrl{
     //解析数据
     NSArray *dataArr = [acdicInfo objectForKey:@"data"];
@@ -81,11 +82,23 @@
     ProductTableViewCell *cell;
     cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell){
-         cell = [[[NSBundle mainBundle]loadNibNamed:@"ProductTableViewCell" owner:self options:nil]objectAtIndex:0];
+        cell = [[[NSBundle mainBundle]loadNibNamed:@"ProductTableViewCell" owner:self options:nil]objectAtIndex:0];
     }
     ProducFortList *product = self.Products[indexPath.row];
     cell.ProductNo.text = product.productno;
     cell.ProductName.text = product.productname;
+//    cell.ProductLogo.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.jxshshop.cn/icon/%@",product.path1]]]];
+    [cell.ProductLogo sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.jxshshop.cn/icon/%@",product.path1]]];
+    cell.Price.text = [NSString stringWithFormat:@"￥：%@",product.shopprice];
+    cell.Type.text = [NSString stringWithFormat:@"规格：%@",product.productspec];
+    cell.unit.text = [NSString stringWithFormat:@"单位：%@",product.measureunit];
+    cell.shopName.text = [NSString stringWithFormat:@"店铺：%@",product.shopname];
+    
+//    NSURL *imageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.jxshshop.cn/icon/%@",product.path1]];
+//    NSData *imgData = [NSData dataWithContentsOfURL:imageUrl];
+//    UIImage *img = [UIImage imageWithData:imgData];
+//    cell.ProductLogo.image = img;
+//    NSLog(@"www.jxshshop.cn/icon/%@",product.path1);
     return  cell;
 }
 
@@ -98,12 +111,12 @@
  */
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 67;
+    return 180;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSstringwithFormat:@"%ld,%d",(long)indexPath.section,(long)indexPath.row] delegate:self self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//    [alert show];
+    //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:[NSstringwithFormat:@"%ld,%d",(long)indexPath.section,(long)indexPath.row] delegate:self self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    //    [alert show];
 }
 
 @end
