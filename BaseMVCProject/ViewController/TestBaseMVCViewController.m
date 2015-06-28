@@ -11,6 +11,9 @@
 #import "ProducFortList.h"
 #import "ProductTableViewCell.h"
 #import "UIImageView+WebCache.h"
+#import "UIScrollView+MJRefresh.h"
+#import "MJRefreshNormalHeader.h"
+#import "MJRefreshAutoNormalFooter.h"
 
 @interface TestBaseMVCViewController ()<UITableViewDataSource,UITableViewDelegate>
 //
@@ -21,6 +24,23 @@
 @implementation TestBaseMVCViewController
 
 - (void)viewDidLoad {
+    __weak __typeof(self) weakself = self;
+    //设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
+    self.tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [weakself loadNewData];
+    }];
+    self.tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+        [weakself loadNewData];
+    }];
+    
+    //马上进入刷新状态
+   // [self.tableView.header beginRefreshing];
+    [self.tableView.header endRefreshing];
+    [self.tableView.footer endRefreshing];
+    //[self loadNewData];
+}
+
+- (void)loadNewData{
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     //    [[self getNetWork]requestHomeAdvertiseSelectList];
@@ -28,7 +48,7 @@
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
     [dic setObject:@"1" forKey:@"corpid"];
     [dic setObject:@"0" forKey:@"start"];
-    [dic setObject:@"999" forKey:@"limit"];
+    [dic setObject:@"10" forKey:@"limit"];
     [[self getNetWork]requestProductListQuery:dic];
 }
 
