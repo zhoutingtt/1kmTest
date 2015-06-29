@@ -24,31 +24,48 @@
 @implementation TestBaseMVCViewController
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    
+    //数组初始化只做一遍就好，昨天报错和今天报错都是因为，你把这个初始化过程加进了取数据的方法，每取一次数据，就初始化一次，是存不下数据的。！！！！
+    self.Products = [[NSMutableArray alloc]init];
+    
     __weak __typeof(self) weakself = self;
     //设置回调（一旦进入刷新状态就会调用这个refreshingBlock）
     self.tableView.header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [weakself loadNewData];
+        //如果是头刷新，咱就让start＝0，给接口传进去。
+        [weakself loadNewData:0];
     }];
+    [self.tableView.header beginRefreshing];
+    
     self.tableView.footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        [weakself loadNewData];
+        //如果是尾刷新，就让start等于现有的商品数目，接口查询的时候就会从start的位置查询数据。
+        [weakself loadNewData:self.Products.count];
     }];
     
     //马上进入刷新状态
    // [self.tableView.header beginRefreshing];
-    [self.tableView.header endRefreshing];
-    [self.tableView.footer endRefreshing];
+
     //[self loadNewData];
 }
 
-- (void)loadNewData{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+- (void)loadNewData:(NSInteger)start{
+
     //    [[self getNetWork]requestHomeAdvertiseSelectList];
-    self.Products = [[NSMutableArray alloc]init];
+    
+    //新建一个存参数的字典
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
+    
+    //集团id
     [dic setObject:@"1" forKey:@"corpid"];
-    [dic setObject:@"0" forKey:@"start"];
+    
+    //从第几条数据开始请求
+    [dic setObject:[NSString stringWithFormat:@"%ld",(long)start] forKey:@"start"];
+    
+    //每次请求多少条数据
     [dic setObject:@"10" forKey:@"limit"];
+    
+    //开始请求
     [[self getNetWork]requestProductListQuery:dic];
 }
 
@@ -67,6 +84,15 @@
  }
  */
 -(void)didRequestSuccess:(NSDictionary*)acdicInfo withUrl:(NSString*)acstrUrl{
+    //结束刷新一定要在请求到数据以后，要不然刷新就没有意义
+    [self.tableView.header endRefreshing];
+    [self.tableView.footer endRefreshing];
+    
+    //如果请求的地址里有@“start＝0”，就意味着得从头加载数据，所以咱就把存商品的数组清空一下。
+    if ([acstrUrl rangeOfString:@"start=0"].location != NSNotFound) {
+        [self.Products removeAllObjects];
+    }
+    
     //解析数据
     NSArray *dataArr = [acdicInfo objectForKey:@"data"];
     
